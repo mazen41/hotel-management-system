@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Reservation — front-desk booking record prepared for NoBeds OTA imports.
+ * Reservation — placeholder model for guest relationship support.
+ *
+ * The reservation workflow will be implemented in a later phase; this model
+ * only exposes relationships needed by Guest Management today.
  */
 class Reservation extends Model
 {
@@ -64,6 +68,12 @@ class Reservation extends Model
         'paid_amount' => 'decimal:2',
         'balance_due' => 'decimal:2',
         'synced_at' => 'datetime',
+    protected $guarded = [];
+
+    protected $casts = [
+        'check_in' => 'date',
+        'check_out' => 'date',
+        'channel_synced_at' => 'datetime',
         'cancelled_at' => 'datetime',
     ];
 
