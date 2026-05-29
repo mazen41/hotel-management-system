@@ -37,13 +37,13 @@ class RoomAvailabilityController extends Controller
         $checkOut = $request->check_out;
 
         // ── Find rooms that have NO overlapping confirmed/active reservation ──
-        // Overlap condition: existing.check_in < requested.check_out
-        //                AND existing.check_out > requested.check_in
+        // Overlap condition: existing.check_in_date < requested.check_out
+        //                AND existing.check_out_date > requested.check_in
         $bookedRoomIds = DB::table('reservations')
             ->whereIn('status', ['pending', 'confirmed', 'checked_in'])
             ->whereNull('deleted_at')
-            ->where('check_in', '<', $checkOut)
-            ->where('check_out', '>', $checkIn)
+            ->where('check_in_date', '<', $checkOut)
+            ->where('check_out_date', '>', $checkIn)
             ->pluck('room_id');
 
         $query = Room::with('roomType')

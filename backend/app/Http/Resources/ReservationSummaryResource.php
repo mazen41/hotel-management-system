@@ -11,6 +11,10 @@ class ReservationSummaryResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'reservation_number' => $this->reservation_number,
+            'check_in_date' => $this->check_in_date?->toDateString(),
+            'check_out_date' => $this->check_out_date?->toDateString(),
+            'nights' => $this->nights,
             'confirmation_number' => $this->confirmation_number,
             'check_in' => $this->check_in?->toDateString(),
             'check_out' => $this->check_out?->toDateString(),
@@ -18,6 +22,7 @@ class ReservationSummaryResource extends JsonResource
             'payment_status' => $this->payment_status,
             'source' => $this->source,
             'total_amount' => $this->total_amount,
+            'balance_due' => $this->balance_due,
         ];
     }
 }
