@@ -99,6 +99,6 @@ class RoomType extends Model
         if ($this->max_children > 0) {
             $parts[] = "{$this->max_children} child" . ($this->max_children > 1 ? 'ren' : '');
         }
-        return implode(', ', parts) ?: 'No occupancy limit';
+        return implode(', ', $parts) ?: 'No occupancy limit';
     }
 }

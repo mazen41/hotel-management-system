@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Room\RoomController;
+use App\Http\Controllers\Api\Room\RoomAvailabilityController;
 use App\Http\Controllers\Api\RoomType\RoomTypeController;
 use App\Http\Controllers\Api\Settings\HotelSettingsController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rooms
     Route::prefix('rooms')->group(function () {
+        Route::get('/availability', RoomAvailabilityController::class);  // must be before /{room}
         Route::get('/',     [RoomController::class, 'index']);
         Route::post('/',    [RoomController::class, 'store']);
         Route::get('/{room}',[RoomController::class, 'show']);
