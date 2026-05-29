@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
+use App\Http\Controllers\Api\Guest\GuestController;
 use App\Http\Controllers\Api\Room\RoomController;
 use App\Http\Controllers\Api\Room\RoomAvailabilityController;
 use App\Http\Controllers\Api\RoomType\RoomTypeController;
@@ -53,6 +54,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{roomType}',[RoomTypeController::class, 'show']);
         Route::put('/{roomType}',[RoomTypeController::class, 'update']);
         Route::delete('/{roomType}',[RoomTypeController::class, 'destroy']);
+    });
+
+    // Guests
+    Route::prefix('guests')->group(function () {
+        Route::get('/search', [GuestController::class, 'search']); // must be before /{guest}
+        Route::get('/', [GuestController::class, 'index']);
+        Route::post('/', [GuestController::class, 'store']);
+        Route::get('/{guest}', [GuestController::class, 'show']);
+        Route::put('/{guest}', [GuestController::class, 'update']);
+        Route::delete('/{guest}', [GuestController::class, 'destroy']);
     });
 
     // Rooms
