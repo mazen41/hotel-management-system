@@ -9,29 +9,18 @@ return new class extends Migration {
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id();
-            $table->string('confirmation_number')->unique();
+            $table->string('reservation_number')->unique();
             $table->foreignId('guest_id')->constrained('guests')->onDelete('restrict');
             $table->foreignId('room_id')->constrained('rooms')->onDelete('restrict');
             $table->foreignId('room_type_id')->constrained('room_types')->onDelete('restrict');
 
-            // Dates
-            $table->date('check_in');
-            $table->date('check_out');
-            $table->unsignedInteger('nights')->default(1);
-
-            // Guests
+            $table->string('source', 80)->default('direct');
+            $table->date('check_in_date');
+            $table->date('check_out_date');
             $table->unsignedInteger('adults')->default(1);
             $table->unsignedInteger('children')->default(0);
+            $table->unsignedInteger('nights')->default(1);
 
-            // Pricing
-            $table->decimal('rate_per_night', 10, 2);
-            $table->decimal('subtotal', 10, 2);
-            $table->decimal('taxes', 10, 2)->default(0);
-            $table->decimal('total_amount', 10, 2);
-            $table->decimal('amount_paid', 10, 2)->default(0);
-            $table->decimal('balance_due', 10, 2)->default(0);
-
-            // Status
             $table->enum('status', [
                 'pending',
                 'confirmed',
@@ -43,34 +32,41 @@ return new class extends Migration {
 
             $table->enum('payment_status', [
                 'unpaid',
-                'partial',
+                'partially_paid',
                 'paid',
                 'refunded',
             ])->default('unpaid');
 
-            // Source
-            $table->string('source')->default('direct'); // direct, booking_com, expedia, airbnb, nobeds, walk_in
-            $table->string('source_reservation_id')->nullable(); // external booking ID (e.g. Booking.com booking number)
-
-            // NoBeds / Channel Manager fields
-            $table->string('channel_reservation_id')->nullable();
-            $table->string('channel_name')->nullable();
-            $table->timestamp('channel_synced_at')->nullable();
+            $table->decimal('subtotal', 12, 2)->default(0);
+            $table->decimal('taxes', 12, 2)->default(0);
+            $table->decimal('fees', 12, 2)->default(0);
+            $table->decimal('total_amount', 12, 2)->default(0);
+            $table->decimal('paid_amount', 12, 2)->default(0);
+            $table->decimal('balance_due', 12, 2)->default(0);
 
             $table->text('special_requests')->nullable();
             $table->text('internal_notes')->nullable();
+
+            // Future NoBeds/channel-manager synchronization fields.
+            $table->string('external_reservation_id')->nullable();
+            $table->string('channel_manager_reference')->nullable();
+            $table->timestamp('synced_at')->nullable();
+
             $table->timestamp('cancelled_at')->nullable();
             $table->string('cancellation_reason')->nullable();
-
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('confirmation_number');
-            $table->index('check_in');
-            $table->index('check_out');
-            $table->index('status');
+            $table->index('reservation_number');
+            $table->index('guest_id');
+            $table->index('room_id');
+            $table->index('room_type_id');
             $table->index('source');
-            $table->index('channel_reservation_id');
+            $table->index('status');
+            $table->index('payment_status');
+            $table->index(['check_in_date', 'check_out_date']);
+            $table->index('external_reservation_id');
+            $table->index('channel_manager_reference');
         });
     }
 
